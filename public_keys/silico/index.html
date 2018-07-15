@@ -1,9 +1,73 @@
 <!DOCTYPE html>
 <html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+    box-sizing: border-box;
+}
+input[type=text], select, textarea {
+    width: 95%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+}
+label {
+    padding: 12px 12px 12px 0;
+    display: inline-block;
+}
+.container {
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+}
+.col-25 {
+    float: left;
+    width: 25%;
+    margin-top: 6px;
+}
+.col-75 {
+    float: left;
+    width: 75%;
+    margin-top: 6px;
+}
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+@media screen and (max-width: 600px) {
+    .col-25, .col-75, input[type=submit] {
+        width: 100%;
+        margin-top: 0;
+    }
+}
+</style>
+</head>
 <body>
 
-<h2>Public Key for meson@insilicobio.com</h2> 
-<textarea rows="25" cols="70">
+<h2>Public Key for meson@me.com</h2>
+<p></p>
+
+<div class="container">
+
+    <div class="row">
+      <div class="col-25">
+        <label for="lname">Email Address</label>
+      </div>
+      <div class="col-75">
+          <p><strong>meson@me.com</strong></p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-25">
+        <label for="subject">Public Key</label>
+      </div>
+      <div class="col-75">
+        <textarea id="subject" name="subject" style="height:400px">
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: SKS 1.1.6
 Comment: email: meson@insilicobio.com 
@@ -62,9 +126,11 @@ Hk+drOFcxEfbnLvpiU9WxSyD59CIWef+AEnlxTiRgh/E4/5omUN+H39u0TbESbx4XI160kx1
 8TgVm12FnAbZ210bum3Qox1PwebxUyi5zmU6tvKvHaSA
 =+Ub2
 -----END PGP PUBLIC KEY BLOCK-----
-</textarea>
+        </textarea>
+      </div>
+    </div>
 
-
-<h3>Ctrl-A (Select All) and Ctrl-C (Copy) in Text Area</h3>
+</div>
+<h2>Ctrl-A (Select All) and Ctrl-C (Copy) in Text Area</h2>
 </body>
 </html>
