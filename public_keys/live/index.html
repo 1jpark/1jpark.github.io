@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Public Key for meson@live.com</title> 
     
 <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.meson.one/favicon/pkey/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.meson.one/favicon/pkey/favicon-32x32.png">
@@ -9,54 +10,54 @@
 <link rel="mask-icon" href="https://cdn.meson.one/favicon/pkey/safari-pinned-tab.svg" color="#5bbad5">
 <meta name="msapplication-TileColor" content="#da532c">
 <meta name="theme-color" content="#ffffff">
+
+<link href="https://fonts.googleapis.com/css?family=Josefin+Sans|Source+Code+Pro" rel="stylesheet">
     
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 * {
     box-sizing: border-box;
 }
-
 input[type=text], select, textarea {
     width: 95%;
     padding: 12px;
     border: 1px solid #ccc;
     border-radius: 4px;
     resize: vertical;
+    font-family: 'Source Code Pro', monospace;
 }
-
 label {
     padding: 12px 12px 12px 0;
     display: inline-block;
 }
-
-
-
+h2 { 
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 26px;
+}
+    
 .container {
     border-radius: 5px;
     background-color: #f2f2f2;
     padding: 20px;
 }
-
 .col-25 {
     float: left;
     width: 25%;
     margin-top: 6px;
+    font-family: 'Josefin Sans', sans-serif;
 }
-
 .col-75 {
     float: left;
     width: 75%;
     margin-top: 6px;
+    font-family: 'Josefin Sans', sans-serif;
 }
-
 /* Clear floats after the columns */
 .row:after {
     content: "";
     display: table;
     clear: both;
 }
-
-
 @media screen and (max-width: 600px) {
     .col-25, .col-75, input[type=submit] {
         width: 100%;
@@ -86,7 +87,7 @@ label {
         <label for="subject">Public Key</label>
       </div>
       <div class="col-75">
-        <textarea id="subject" name="subject" style="height:400px">
+        <textarea id="subject" name="subject" spellcheck="false" style="height:400px">
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: SKS 1.1.6
 Comment: email: meson@live.com 
@@ -632,4 +633,3 @@ FuUVRRzvxfZrnLcjLz+5BKbIC8DmUdlGEY3NtISN9L4rRevj0uqGdFY+jA==
 <h2>Ctrl-A (Select All) and Ctrl-C (Copy) in Text Area</h2>
 </body>
 </html>
-
