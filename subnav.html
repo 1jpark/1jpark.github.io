@@ -1,0 +1,251 @@
+<!DOCTYPE HTML>
+<!--
+	Aerial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Aquí está Júne</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="theme-color" content="#2980B9">
+		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
+		<link rel="apple-touch-icon" sizes="180x180" href="favicons/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="favicons/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="favicons/favicon-16x16.png">
+		<link rel="manifest" href="favicons/site.webmanifest">
+		<link rel="mask-icon" href="favicons/safari-pinned-tab.svg" color="#5bbad5">
+		<link rel="shortcut icon" href="favicons/favicon.ico">
+		<meta name="msapplication-TileColor" content="#da532c">
+		<meta name="msapplication-config" content="favicons/browserconfig.xml">
+
+		<meta property="og:image:width" content="1806">
+		<meta property="og:image:height" content="946">
+		<meta property="og:title" content="Aqu&iacute; est&aacute; J&uacute;ne: Webby Gateway">
+		<meta property="og:description" content="Web Gateway for organizing all sites and services by Thomas J&uacute;ne Park | Links to blog, cloud platform, personal wiki, personal pages in social networks ">
+		<meta property="og:image" content="https://cdn.meson.one/o/june_meson.jpg">
+		<meta property="og:url" content="https://meson.one/">
+		<meta property="profile:first_name" content="Júne">
+		<meta property="profile:last_name" content="Park">
+
+		<script src="https://kit.fontawesome.com/de483f2b65.js" crossorigin="anonymous"></script>
+		<link href="https://fonts.googleapis.com/css?family=Alegreya:500" rel="stylesheet">
+		
+		<!-- Google tag (gtag.js) -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-S8GXZK87NT"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+		  gtag('config', 'G-S8GXZK87NT');
+		</script>
+
+		<style>
+			/* ── Expandable nav item ── */
+
+			/* The <li> that has children becomes a relative container */
+			li.has-subnav {
+				position: relative;
+			}
+
+			/* The toggle button mimics the existing <a> style exactly,
+			   but has no href so clicking it never navigates away */
+			li.has-subnav > a.subnav-toggle {
+				cursor: pointer;
+			}
+
+			/* Small chevron appended after the label text */
+			li.has-subnav > a.subnav-toggle .subnav-arrow {
+				display: inline-block;
+				margin-left: 6px;
+				font-size: 0.65em;
+				vertical-align: middle;
+				transition: transform 0.25s ease;
+				font-style: normal;
+			}
+
+			li.has-subnav.open > a.subnav-toggle .subnav-arrow {
+				transform: rotate(180deg);
+			}
+
+			/* Sub-item list */
+			.subnav {
+				display: none;           /* hidden by default */
+				list-style: none;
+				margin: 0;
+				padding: 0;
+				/* Sits below the parent <li> in the flow.
+				   The Aerial theme lays out nav > ul > li items;
+				   we inject this ul inside the li so it wraps tightly. */
+			}
+
+			li.has-subnav.open .subnav {
+				display: block;
+			}
+
+			/* Sub-items inherit the same link aesthetic but slightly smaller */
+			.subnav li a {
+				font-size: 0.82em !important;   /* slightly smaller than parent */
+				opacity: 0.85;
+				padding-left: 1em;              /* indent to signal hierarchy */
+				/* All other styles (font-family, color, border, transition, etc.)
+				   come from the parent theme's nav a rules — no need to repeat */
+			}
+
+			.subnav li a:before {
+				/* re-use the theme's icon slot but with a sub-bullet feel */
+				content: "\f178";               /* fa-arrow-right-long */
+				font-family: "Font Awesome 6 Free";
+				font-weight: 900;
+				margin-right: 6px;
+				font-size: 0.8em;
+			}
+
+			/* Animate open/close with a gentle slide-down */
+			@keyframes subnavOpen {
+				from { opacity: 0; transform: translateY(-4px); }
+				to   { opacity: 1; transform: translateY(0); }
+			}
+			li.has-subnav.open .subnav {
+				animation: subnavOpen 0.2s ease forwards;
+			}
+		</style>
+	</head>
+
+	<body class="loading">
+		<div id="wrapper">
+			<div id="bg"></div>
+			<div id="overlay"></div>
+			<div id="main">
+
+	<!-- Header -->
+	<header id="header">
+		<h1>Thomas Júne Park</h1>
+		<p>ª Σystems βiologist</p>
+		<p>ª δata Σcientist</p>
+		<p>ª Μachine αrchitect</p>
+
+		<div hidden><img src="https://cdn.meson.one/o/meson_one.jpg" width="100" height="100"> </div>
+	<nav>
+		<ul>
+			<li>
+				<a href="https://june.meson.kr/" class="fas fa-pen-nib">
+				<span>the Great World Meson</span>
+				</a>
+			</li>
+			<li>
+				<a href="https://cloud.meson.in/" class="fas fa-server">
+				<span>June's Cloud Platform</span>
+				</a>
+			</li>
+
+			<!-- ── 3rd item: expandable Wiki ── -->
+			<!--
+				To add sub-items to any other nav entry in future:
+				  1. Add class="has-subnav" to the <li>
+				  2. Change its <a> to include class="subnav-toggle" and data-href="ORIGINAL_URL"
+				  3. Add the arrow span inside the label
+				  4. Add a <ul class="subnav"> after the <a>
+			-->
+			<li class="has-subnav">
+				<a class="fas fa-laptop-code subnav-toggle" data-href="https://wiki.meson.in/" href="#">
+					<span>June's Wiki<i class="subnav-arrow fas fa-chevron-down"></i></span>
+				</a>
+				<ul class="subnav">
+					<li><a href="https://wiki.meson.in/">wiki.meson.in</a></li>
+					<li><a href="https://wiki.meson.one/">wiki.meson.one</a></li>
+					<li><a href="https://get.meson.in/">get.meson.in</a></li>
+				</ul>
+			</li>
+		</ul>
+
+		<ul>  
+			<li>
+				<a href="https://pi.meson.one/" class="fas fa-pizza-slice">
+				<span>June's PiON Platform</span>
+				</a>
+			</li>
+			<li>
+				<a href="https://facebook.com/1jpark" class="fab fa-facebook-f">
+				<span>June's Facebook</span>
+				</a>
+			</li>
+			<li>
+				<a href="https://twitter.com/1jpark" class="fab fa-x-twitter">
+				<span>June's X</span>
+				</a>
+			</li>
+		</ul>
+
+		<ul>   
+			<li>
+				<a href="https://mu.meson.one/" class="fas fa-cubes">
+				<span>June's MuON Platform</span>
+				</a>
+			</li>
+			<li>
+				<a href="https://instagram.com/1jpark" class="fab fa-instagram">
+				<span>June's Instagram</span>
+				</a>
+			</li>
+			<li>
+				<a href="https://pinterest.com/1jpark" class="fab fa-pinterest-p">
+				<span>June's Pinterest</span>
+				</a>
+			</li>
+		</ul>
+	</nav>
+	</header>
+
+		<!-- Footer -->
+		<footer id="footer">
+			<span class="copyright">Powered by <a href="https://github.com/1jpark"><i class="fab fa-github"></i></a> / </span>
+			<span class="copyright">Contacts via <a href="mailto:ego+web@meson.one"><i class="fas fa-at"></i></a> | </span> 
+			<span class="copyright"> <a href="https://slack.meson.one"><i class="fab fa-slack"></i></a> | </span> 
+			<span class="copyright"> <a href="https://t.me/meson"><i class="fab fa-telegram"></i></a>  </span> 		
+		</footer>
+
+			</div>
+		</div>
+		<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+		<script>
+			window.onload = function() { document.body.className = ''; }
+			window.ontouchmove = function() { return false; }
+			window.onorientationchange = function() { document.body.scrollTop = 0; }
+		</script>
+
+		<script>
+			/* ── Subnav toggle logic ── */
+			document.querySelectorAll('.subnav-toggle').forEach(function(toggle) {
+				toggle.addEventListener('click', function(e) {
+					e.preventDefault();
+					var li = this.closest('li.has-subnav');
+					var isOpen = li.classList.contains('open');
+
+					// Close all open subnavs first
+					document.querySelectorAll('li.has-subnav.open').forEach(function(el) {
+						el.classList.remove('open');
+					});
+
+					// If it wasn't open, open it; if it was, it's now closed (toggle)
+					if (!isOpen) {
+						li.classList.add('open');
+					}
+				});
+			});
+
+			// Close subnav when clicking anywhere outside
+			document.addEventListener('click', function(e) {
+				if (!e.target.closest('li.has-subnav')) {
+					document.querySelectorAll('li.has-subnav.open').forEach(function(el) {
+						el.classList.remove('open');
+					});
+				}
+			});
+		</script>
+	</body>
+</html>
