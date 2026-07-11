@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>keyring // meson.one</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#12151a;
+    --bg-2:#0d0f13;
+    --surface:#1b2028;
+    --surface-2:#21272f;
+    --border:#2b323c;
+    --border-soft:#232a33;
+    --text:#e9e6de;
+    --text-muted:#8b93a1;
+    --text-dim:#5b6270;
+    --accent:#c6875a;
+    --accent-soft:#c6875a33;
+    --verified:#5fa695;
+    --verified-soft:#5fa69526;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 15% 0%, #1a2129 0%, transparent 45%),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--mono);
+    min-height:100vh;
+    padding:0 0 80px;
+  }
+
+  ::selection{background:var(--accent-soft); color:var(--text);}
+
+  a{color:inherit;}
+
+  /* ---------- header ---------- */
+  header{
+    border-bottom:1px solid var(--border);
+    padding:40px 32px 28px;
+    max-width:1160px;
+    margin:0 auto;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--accent);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:6px;height:6px;
+    border-radius:50%;
+    background:var(--verified);
+    box-shadow:0 0 0 3px var(--verified-soft);
+  }
+  h1{
+    font-family:var(--display);
+    font-weight:700;
+    font-size:clamp(28px, 4vw, 42px);
+    letter-spacing:-0.01em;
+    margin:0 0 10px;
+  }
+  h1 span{color:var(--text-dim); font-weight:500;}
+  .sub{
+    color:var(--text-muted);
+    font-size:14px;
+    line-height:1.6;
+    max-width:640px;
+  }
+  .sub code{
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    padding:1px 6px;
+    border-radius:4px;
+    font-size:13px;
+  }
+
+  /* ---------- search ---------- */
+  .search-wrap{
+    max-width:1160px;
+    margin:28px auto 0;
+    padding:0 32px;
+  }
+  .prompt{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:var(--bg-2);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:14px 16px;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .prompt:focus-within{
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft);
+  }
+  .prompt .glyph{color:var(--verified); font-size:14px; user-select:none;}
+  .prompt input{
+    flex:1;
+    background:transparent;
+    border:none;
+    outline:none;
+    color:var(--text);
+    font-family:var(--mono);
+    font-size:15px;
+    caret-color:var(--accent);
+  }
+  .prompt input::placeholder{color:var(--text-dim);}
+  .cursor{
+    width:8px;height:16px;
+    background:var(--accent);
+    opacity:.85;
+    animation:blink 1.1s steps(1) infinite;
+    flex-shrink:0;
+  }
+  @keyframes blink{50%{opacity:0;}}
+  .result-count{
+    margin-top:10px;
+    font-size:12px;
+    color:var(--text-dim);
+    letter-spacing:.02em;
+    min-height:16px;
+  }
+  .result-count b{color:var(--text-muted); font-weight:600;}
+
+  /* ---------- grid ---------- */
+  .grid{
+    max-width:1160px;
+    margin:32px auto 0;
+    padding:0 32px;
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));
+    gap:18px;
+  }
+
+  .card{
+    position:relative;
+    background:linear-gradient(180deg, var(--surface) 0%, var(--surface) 100%);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:20px 20px 18px 26px;
+    transition:transform .15s ease, border-color .15s ease;
+  }
+  .card:hover{border-color:#3a4350; transform:translateY(-2px);}
+  .card.hidden{display:none;}
+
+  /* keyring punch hole + perforation, the signature element */
+  .card::before{
+    content:"";
+    position:absolute;
+    left:-9px; top:24px;
+    width:18px; height:18px;
+    background:var(--bg);
+    border:1px solid var(--border);
+    border-radius:50%;
+    box-shadow:inset 0 0 0 3px var(--surface-2);
+  }
+  .card::after{
+    content:"";
+    position:absolute;
+    left:6px; top:0; bottom:0;
+    border-left:1px dashed var(--border-soft);
+  }
+
+  .card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .identity .name{
+    font-family:var(--display);
+    font-weight:600;
+    font-size:16px;
+    color:var(--text);
+    margin-bottom:3px;
+  }
+  .identity .email{
+    font-size:13px;
+    color:var(--accent);
+    word-break:break-all;
+  }
+  .status{
+    font-size:10px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    padding:3px 8px;
+    border-radius:99px;
+    white-space:nowrap;
+    flex-shrink:0;
+    margin-top:2px;
+  }
+  .status.ok{color:var(--verified); background:var(--verified-soft); border:1px solid #5fa69540;}
+  .status.pending{color:var(--text-dim); background:var(--surface-2); border:1px solid var(--border);}
+
+  .field{margin-top:12px;}
+  .field .label{
+    font-size:10px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    margin-bottom:4px;
+  }
+  .field .value{
+    font-size:12.5px;
+    color:var(--text-muted);
+    line-height:1.6;
+    word-break:break-all;
+  }
+  .fpr{
+    font-size:12px;
+    letter-spacing:.03em;
+    color:var(--text);
+    background:var(--bg-2);
+    border:1px solid var(--border-soft);
+    border-radius:6px;
+    padding:8px 10px;
+    line-height:1.7;
+  }
+  .meta-row{
+    display:flex;
+    gap:18px;
+    margin-top:12px;
+    flex-wrap:wrap;
+  }
+  .meta-row .field{margin-top:0; flex:1; min-width:110px;}
+
+  .actions{
+    display:flex;
+    gap:8px;
+    margin-top:16px;
+    flex-wrap:wrap;
+  }
+  button.btn{
+    font-family:var(--mono);
+    font-size:11.5px;
+    letter-spacing:.03em;
+    color:var(--text-muted);
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    padding:7px 11px;
+    border-radius:7px;
+    cursor:pointer;
+    transition:all .12s ease;
+  }
+  button.btn:hover{color:var(--text); border-color:var(--accent); background:var(--accent-soft);}
+  button.btn.copied{color:var(--verified); border-color:#5fa69560; background:var(--verified-soft);}
+
+  details.armor{margin-top:14px;}
+  details.armor summary{
+    cursor:pointer;
+    font-size:11px;
+    color:var(--text-dim);
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    list-style:none;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  details.armor summary::before{content:"▸"; font-size:10px; transition:transform .15s ease;}
+  details.armor[open] summary::before{transform:rotate(90deg);}
+  details.armor summary::-webkit-details-marker{display:none;}
+  details.armor pre{
+    margin-top:10px;
+    background:var(--bg-2);
+    border:1px solid var(--border-soft);
+    border-radius:8px;
+    padding:12px;
+    font-size:10.5px;
+    line-height:1.5;
+    color:var(--text-dim);
+    max-height:220px;
+    overflow:auto;
+    white-space:pre-wrap;
+    word-break:break-all;
+  }
+
+  .empty{
+    max-width:1160px;
+    margin:60px auto;
+    padding:0 32px;
+    text-align:center;
+    color:var(--text-dim);
+    font-size:13px;
+  }
+  .empty .glyph-big{font-size:28px; margin-bottom:10px; color:var(--text-dim);}
+
+  footer{
+    max-width:1160px;
+    margin:60px auto 0;
+    padding:24px 32px 0;
+    border-top:1px solid var(--border);
+    color:var(--text-dim);
+    font-size:11.5px;
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+
+  @media (max-width:520px){
+    header, .search-wrap, .grid, footer{padding-left:18px; padding-right:18px;}
+    .card{padding-left:24px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .cursor{animation:none;}
+    .card{transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">meson.one / keyring</div>
+  <h1>Public key directory<span>.</span></h1>
+  <p class="sub">
+    OpenPGP public keys for reaching me at any of my addresses. Look up by email or key ID, verify the fingerprint against another channel before trusting it, then import.
+    New keys: <code>gpg --import</code>.
+  </p>
+</header>
+
+<div class="search-wrap">
+  <label class="prompt" for="q">
+    <span class="glyph">gpg&gt;</span>
+    <input id="q" type="text" placeholder="search email or key ID..." autocomplete="off" spellcheck="false">
+    <span class="cursor" aria-hidden="true"></span>
+  </label>
+  <div class="result-count" id="resultCount"></div>
+</div>
+
+<div class="grid" id="grid"></div>
+<div class="empty" id="emptyState" style="display:none;">
+  <div class="glyph-big">∅</div>
+  no keys match that query
+</div>
+
+<footer>
+  <span id="keyCount">— keys loaded</span>
+  <span>fingerprints verified client-side via openpgp.js</span>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/openpgp@5/dist/openpgp.min.js"></script>
+<script>
+const KEYS = [
+  {
+    email: "june@meson.kr",
+    keyId: "D6EE491B98DC1998",
+    armor: `-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xjMEalHbpRYJKwYBBAHaRw8BAQdAkwKEa9nhrMgtqGuLk1IKQL/Gor8a/j63
+JHf7ubXX0ArNGUp1bmUgUGFyayA8anVuZUBtZXNvbi5rcj7CkwQTFgoAOxYh
+BPBOrDTGv2ZCxnpwH9buSRuY3BmYBQJqUdulAhsDBQsJCAcCAiICBhUKCQgL
+AgQWAgMBAh4HAheAAAoJENbuSRuY3BmYcHcA+QFE/8g5sj0GxqV2hHGoQaJg
+9Z5mNhLdMjYAnpXyTyZiAP9HW19h1HY0Ue6QZWM4/LBp62LkZZTQ4qDiwuxx
+iR13Cc44BGpR26USCisGAQQBl1UBBQEBB0A4PN8eR30jmhcb5IG4/Nto5ICR
+zeYJErKnZQC/IpWnPAMBCAfCeAQYFgoAIBYhBPBOrDTGv2ZCxnpwH9buSRuY
+3BmYBQJqUdulAhsMAAoJENbuSRuY3BmYN5gBAIA2QIohx8xZLZTMurwDchBb
+Yg5/O1S5oZwkoL6ppQ+vAPwKeh+ixHK/ViszgU6IFsgkG5dbvABAEzrmoukU
+qPxlBw==
+=JCcN
+-----END PGP PUBLIC KEY BLOCK-----`
+  },
+  {
+    email: "june@meson.in",
+    keyId: "D6EE491B98DC1998",
+    armor: `-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xjMEalHgERYJKwYBBAHaRw8BAQdAlt51qtgh34uSkxek1BtFYlcODGxP5lhi
+uwseoPGvvzPNGUp1bmUgUGFyayA8anVuZUBtZXNvbi5pbj7CkwQTFgoAOxYh
+BFOuISoyoRlCAf9oyi//KtWz1stXBQJqUeARAhsDBQsJCAcCAiICBhUKCQgL
+AgQWAgMBAh4HAheAAAoJEC//KtWz1stX1JABALZb7csaWPtXzWzAS0QAXLDW
+qLIlU366YrRxwtzDtgHLAQCsBus6/xQMe0P27p/scjFkaka/RUEJVx5wqwH6
+kpITCc44BGpR4BESCisGAQQBl1UBBQEBB0DkizPG08xzyse+aqnRDY0Jjmbr
+5xdDCsKwM4UYnLCpAgMBCAfCeAQYFgoAIBYhBFOuISoyoRlCAf9oyi//KtWz
+1stXBQJqUeARAhsMAAoJEC//KtWz1stXPEABAP+SfuV3Nw28r0TJuk8JlZTL
+ZbmL+oiN4qjkB0Bvgx0ZAP9VehZePuClD2Ol3pmgBRr1GwDgnaFFrVagjea9
+MymICw==
+=PPzi
+-----END PGP PUBLIC KEY BLOCK-----`
+  },
+  {
+    email: "meson@insilicobio.com",
+    keyId: "3662D605FDD829B9",
+    armor: `-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xjMEalHhHxYJKwYBBAHaRw8BAQdAFCVGGcQ3wnhHxkwuCKNpQvnAssNrZGRc
+2mMPgTFDMKnNJlRob21hcyBKLiBQYXJrIDxtZXNvbkBpbnNpbGljb2Jpby5j
+b20+wpMEExYKADsWIQR2Ieq/cfBZkJz+UE02YtYF/dgpuQUCalHhHwIbAwUL
+CQgHAgIiAgYVCgkICwIEFgIDAQIeBwIXgAAKCRA2YtYF/dgpuSrAAQDueeoK
+t9nscQ4j/k0bvy3fbSvtMjAqR2p28EQKoHiObAD/TXAIHbmGIfin0bahA9E9
+yX6ekXW5W2+sAaPSszY7sgfOOARqUeEfEgorBgEEAZdVAQUBAQdAVXla2ajT
+toKelxzAYPLFTWcZ6fVtrDYvvO1+UeA3VFQDAQgHwngEGBYKACAWIQR2Ieq/
+cfBZkJz+UE02YtYF/dgpuQUCalHhHwIbDAAKCRA2YtYF/dgpuWSwAQC4SRsS
+hk8TxAt6LniCY0g9Z8OjwOfhwfwJrMuqjaZwGwD/Ro8zicLAppXBXqithmbq
+A4QTZtK2gUo7jrvwf4HtRQY=
+=iQ/q
+-----END PGP PUBLIC KEY BLOCK-----`
+  },
+  {
+    email: "park@wonjun.me",
+    keyId: "9E1DFF1AC127B9AD",
+    armor: `-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xjMEalHnzhYJKwYBBAHaRw8BAQdAaq5DOg5swInh6/rtXC+Ah5Mc0CklGRO6
+PrAaTtn2CP3NHFdvbmp1biBQYXJrIDxwYXJrQHdvbmp1bi5tZT7CkwQTFgoA
+OxYhBD5XAlo6OH/dWPw/c54d/xrBJ7mtBQJqUefOAhsDBQsJCAcCAiICBhUK
+CQgLAgQWAgMBAh4HAheAAAoJEJ4d/xrBJ7mtyuwA/1HEjEmkrHMJJJ5/J7/w
+91UPyX9cJOV2MvQbeDZIHX09AP41pvjY+wwr/FySM8d4CRdTy5kuiaq9ZyZp
+3NMRDtDiDM44BGpR584SCisGAQQBl1UBBQEBB0AgMKAW3TEvem9EHfDQfrBN
+cuLcG0wdD+MUHiFjMLuLFwMBCAfCeAQYFgoAIBYhBD5XAlo6OH/dWPw/c54d
+/xrBJ7mtBQJqUefOAhsMAAoJEJ4d/xrBJ7mtJ9EA/AlUcXe1fPEjkKGWlDUv
+t/AUatQDobvpRTfvyK9b7s2zAP4ocTLGUCyM4iqGDG+pRWX3ld2SNcU1eqCs
+UIlHEfBTAg==
+=jyGN
+-----END PGP PUBLIC KEY BLOCK-----`
+  },
+  {
+    email: "meson@me.com",
+    keyId: "D2037B6DF64D2126",
+    armor: `-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xjMEalHjlRYJKwYBBAHaRw8BAQdAEDPNTwyNaMWzhDBDcwzKzjTTdE+Ggza2
+H6uITX461S7NHVRob21hcyBKLiBQYXJrIDxtZXNvbkBtZS5jb20+wpMEExYK
+ADsWIQQS8Q4l0vdEDKoEcaDSA3tt9k0hJgUCalHjlQIbAwULCQgHAgIiAgYV
+CgkICwIEFgIDAQIeBwIXgAAKCRDSA3tt9k0hJse/AP97hMYgu5N8ua5C2NKb
+xD3N7g9vKa6KUvjrarIz8gWBKwD/YrTB+SLAM3MobMMzJASJFRCtjRQrkcv9
+w4E8hpoLnA3OOARqUeOVEgorBgEEAZdVAQUBAQdA68hGCzV1dVqEwSXAdYA+
+bCQAeETJcRnYeTQb7DYm5koDAQgHwngEGBYKACAWIQQS8Q4l0vdEDKoEcaDS
+A3tt9k0hJgUCalHjlQIbDAAKCRDSA3tt9k0hJuvDAP91TEaKjV77+hZY+3Xh
+2eQm75AMT4YYNW2tr5qKYpv8qQD/atTd3CH/r72kq79m7zQfbBO0Hd6Q8B9C
+ymvS0gtpqA0=
+=Y1o6
+-----END PGP PUBLIC KEY BLOCK-----`
+  },
+  {
+    email: "meson@onni.me",
+    keyId: "BF8C5C701FFC9B42",
+    armor: `-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xjMEalHkvBYJKwYBBAHaRw8BAQdAc/CRrSRc+Zds+Eaq+Q+6myAGGVjekBt1
+ebnGwZ6K1KHNHlRob21hcyBKLiBQYXJrIDxtZXNvbkBvbm5pLm1lPsKTBBMW
+CgA7FiEEwkUU9j5dTdRQZp82v4xccB/8m0IFAmpR5LwCGwMFCwkIBwICIgIG
+FQoJCAsCBBYCAwECHgcCF4AACgkQv4xccB/8m0IMBQD9Gw/1f8iWlAreceZL
+4dVp9+uS0VsXMt8jWZiYn6ztHH8BAK4dyGZdeTq+eqWYfYh3NCCkcExZvf8R
+isdRgZpB50AAzjgEalHkvBIKKwYBBAGXVQEFAQEHQN03UmRaKd1IYPETagZg
+mWI9ggH83/C/llbn4T1B1VNqAwEIB8J4BBgWCgAgFiEEwkUU9j5dTdRQZp82
+v4xccB/8m0IFAmpR5LwCGwwACgkQv4xccB/8m0J2tAEAqKLoGlf1xo9RBrBF
+Y/T3QD8d9kgVeL4IQ2N6ExiLtTYA/0u00Xl0MTrWy6a6vOLS4yGGQuBPNPog
+5nqkWMR9s9QG
+=bXM6
+-----END PGP PUBLIC KEY BLOCK-----`
+  },
+  {
+    email: "june@meson.one",
+    keyId: "7CE104B5587559DD",
+    armor: `-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xjMEalHljRYJKwYBBAHaRw8BAQdAi05wkX4tZKL9qSSvRw9jBror8lIw51Nq
+cbsVHSnKoh7NGkp1bmUgUGFyayA8anVuZUBtZXNvbi5vbmU+wpMEExYKADsW
+IQQjujOHhFsk7FLijzF84QS1WHVZ3QUCalHljQIbAwULCQgHAgIiAgYVCgkI
+CwIEFgIDAQIeBwIXgAAKCRB84QS1WHVZ3ZYDAP9N2FIrZLt+i4swStcVkag5
+oeQD1cmf/dcKrIP4Wibp6wD+Iov5un0FPd34u/IZXMu1S4iNZdGXis2N5XpK
+N9oO1wzOOARqUeWNEgorBgEEAZdVAQUBAQdA3OmqqNulvNkNENsXEYFJtiIX
+ZAwQIeHscHvfu8zJU0gDAQgHwngEGBYKACAWIQQjujOHhFsk7FLijzF84QS1
+WHVZ3QUCalHljQIbDAAKCRB84QS1WHVZ3RbSAP4znS+xX+NQAduIzcCOweI9
+VBxpHkQjWaxFMTQM9BDUogD+KchMSzBskeyxJzQ6pIpr7ZwV+XiGqqPU5BKD
+V605TwE=
+=QFiK
+-----END PGP PUBLIC KEY BLOCK-----`
+  },
+  {
+    email: "meson@e.email",
+    keyId: "27CAB8199BF14248",
+    armor: `-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xjMEalHokxYJKwYBBAHaRw8BAQdAzJzfPrReGsQcaNSQrh91cEWonIXWtTPe
+DVuOJRz4U8nNHlRob21hcyBKLiBQaWFvIDxtZXNvbkBlLmVtYWlsPsKTBBMW
+CgA7FiEEuUrYjMSF7yPXKp5LJ8q4GZvxQkgFAmpR6JMCGwMFCwkIBwICIgIG
+FQoJCAsCBBYCAwECHgcCF4AACgkQJ8q4GZvxQkjgzAD9HrP+wQtlNk9YCJi5
+ZEHq8FSaRwNj6+BiObtU0Rpmx1sA/2drwBLoYVdlqgS6S7Ls78r4wi70rMNU
+FzFMpIdqhj8OzjgEalHokxIKKwYBBAGXVQEFAQEHQN28jP1IS+1oYa6J7cSR
+evuJlE2qyu2Z0k/wxkUrrUkAAwEIB8J4BBgWCgAgFiEEuUrYjMSF7yPXKp5L
+J8q4GZvxQkgFAmpR6JMCGwwACgkQJ8q4GZvxQkhZQAD6AjarSZlMGYHSeiaW
+6fpAPWGaZ9gtL/9l1m4/YvxONrgBANCgz/SHCYES40cBE5JdQVzfq436B5Y9
+mqwAxIkhugkF
+=ItLW
+-----END PGP PUBLIC KEY BLOCK-----`
+  },
+  {
+    email: "meson@daum.net",
+    keyId: "F31095818E82D2E8",
+    armor: `-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xjMEalHpsBYJKwYBBAHaRw8BAQdAJ8pZM+MgBSjKD6/QpIBnDoAzrpoxUYbx
+96sIxlCq1xzNHFdvbmp1biBQYXJrIDxtZXNvbkBkYXVtLm5ldD7CkwQTFgoA
+OxYhBBuxKaIRLMshD198JvMQlYGOgtLoBQJqUemwAhsDBQsJCAcCAiICBhUK
+CQgLAgQWAgMBAh4HAheAAAoJEPMQlYGOgtLoV/8BAJg/sUx+42ZrpFvAgEw+
+GeriDpXbIQ6iF/oh6iZIHgVbAP4l2DigTankKsFDBI6/vFXYsDfk0CWuuXHR
+GpcKFrcDBM44BGpR6bASCisGAQQBl1UBBQEBB0CUPawgmG0wLSPGIgHHPUyV
+RERhdcKuqssFct1ZLKTmWAMBCAfCdwQYFgoAIBYhBBuxKaIRLMshD198JvMQ
+lYGOgtLoBQJqUemwAhsMAAoJEPMQlYGOgtLoqSkA/1S0dTfAYnuO2xPUfLkq
+oSePfhM2iWreaKFjsvkHU+xzAPYyfw1zLShYghPR+jIoiOUTRTBoPCTTOxFJ
+kNhWCycM
+=ZCAL
+-----END PGP PUBLIC KEY BLOCK-----`
+  },
+  {
+    email: "meson@reasonomics.com",
+    keyId: "5DFA0AC03A2A2AC9",
+    armor: `-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xjMEalHqHBYJKwYBBAHaRw8BAQdASQxrB7crzKAkzLgRoDHWbak52Yq6plKk
+d5QdwWHbSaTNJlRob21hcyBKLiBQaWFvIDxtZXNvbkByZWFzb25vbWljcy5j
+b20+wpMEExYKADsWIQQbKmU9dVkzdd7/pURd+grAOioqyQUCalHqHAIbAwUL
+CQgHAgIiAgYVCgkICwIEFgIDAQIeBwIXgAAKCRBd+grAOioqyYsFAQCf8gU4
+Tdo5k0MYOS8cnDMU9cASdFgXAD/4GJVrzfCd2gEA51sEC9+3F0Bk3vruwIER
+MWvlamDoketpBYWkNTKy9wvOOARqUeocEgorBgEEAZdVAQUBAQdA9dYbHVvt
+W3PUrpdQHoi4JRqcV9zP5z9BfsGYFpCVVkUDAQgHwngEGBYKACAWIQQbKmU9
+dVkzdd7/pURd+grAOioqyQUCalHqHAIbDAAKCRBd+grAOioqybTOAPsEfi38
+hQZa9MQ+Onlx9m/dymLpuON3fa4VuCZdoIRomQD/V8cg79p5NvT9TfTQiNZA
+OU8xpMIzeQE0tnw2dB4EOgU=
+=xBFr
+-----END PGP PUBLIC KEY BLOCK-----`
+  }
+];
+
+const grid = document.getElementById('grid');
+const emptyState = document.getElementById('emptyState');
+const resultCount = document.getElementById('resultCount');
+const keyCount = document.getElementById('keyCount');
+const searchInput = document.getElementById('q');
+
+function groupFingerprint(fpr){
+  // group into 4-char blocks, 5 blocks per line for readability
+  const blocks = fpr.match(/.{1,4}/g) || [fpr];
+  let out = '';
+  blocks.forEach((b, i) => {
+    out += b + ' ';
+    if ((i+1) % 5 === 0) out += '\n';
+  });
+  return out.trim();
+}
+
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function makeCard(key, index){
+  const card = document.createElement('article');
+  card.className = 'card';
+  card.dataset.email = key.email.toLowerCase();
+  card.dataset.keyid = key.keyId.toLowerCase();
+  card.dataset.name = '';
+  card.id = 'key-' + index;
+
+  card.innerHTML = `
+    <div class="card-top">
+      <div class="identity">
+        <div class="name" data-role="name">Resolving identity…</div>
+        <div class="email">${escapeHtml(key.email)}</div>
+      </div>
+      <div class="status pending" data-role="status">parsing</div>
+    </div>
+
+    <div class="field">
+      <div class="label">Key ID</div>
+      <div class="value">${escapeHtml(key.keyId)}</div>
+    </div>
+
+    <div class="field">
+      <div class="label">Fingerprint</div>
+      <div class="fpr" data-role="fpr">—</div>
+    </div>
+
+    <div class="meta-row">
+      <div class="field">
+        <div class="label">Algorithm</div>
+        <div class="value" data-role="algo">—</div>
+      </div>
+      <div class="field">
+        <div class="label">Created</div>
+        <div class="value" data-role="created">—</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" data-action="copy-fpr">copy fingerprint</button>
+      <button class="btn" data-action="copy-armor">copy public key</button>
+      <button class="btn" data-action="download">download .asc</button>
+    </div>
+
+    <details class="armor">
+      <summary>view armored block</summary>
+      <pre>${escapeHtml(key.armor)}</pre>
+    </details>
+  `;
+
+  card.querySelector('[data-action="copy-fpr"]').addEventListener('click', e => {
+    const fpr = card.querySelector('[data-role="fpr"]').textContent.replace(/\s+/g,'');
+    copyText(fpr || key.keyId, e.target);
+  });
+  card.querySelector('[data-action="copy-armor"]').addEventListener('click', e => {
+    copyText(key.armor, e.target);
+  });
+  card.querySelector('[data-action="download"]').addEventListener('click', () => {
+    const blob = new Blob([key.armor], {type:'application/pgp-keys'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = key.email.replace(/[^a-z0-9.@-]/gi,'_') + '.asc';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  return card;
+}
+
+function copyText(text, btn){
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.textContent;
+    btn.textContent = 'copied ✓';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 1400);
+  });
+}
+
+async function resolveKey(key, card){
+  const nameEl = card.querySelector('[data-role="name"]');
+  const statusEl = card.querySelector('[data-role="status"]');
+  const fprEl = card.querySelector('[data-role="fpr"]');
+  const algoEl = card.querySelector('[data-role="algo"]');
+  const createdEl = card.querySelector('[data-role="created"]');
+
+  try{
+    if (typeof openpgp === 'undefined') throw new Error('openpgp.js unavailable');
+    const publicKey = await openpgp.readKey({ armoredKey: key.armor });
+    const fpr = publicKey.getFingerprint().toUpperCase();
+    const uids = publicKey.getUserIDs();
+    const name = (uids[0] || key.email).split('<')[0].trim() || key.email;
+    const created = publicKey.getCreationTime();
+    const algoInfo = publicKey.getAlgorithmInfo();
+
+    nameEl.textContent = name;
+    fprEl.textContent = groupFingerprint(fpr);
+    algoEl.textContent = (algoInfo.curve || algoInfo.algorithm || '—').replace(/^eddsa$/i,'EdDSA (Ed25519)');
+    createdEl.textContent = created ? created.toISOString().slice(0,10) : '—';
+    statusEl.textContent = 'verified';
+    statusEl.classList.remove('pending');
+    statusEl.classList.add('ok');
+    card.dataset.name = name.toLowerCase();
+  }catch(err){
+    nameEl.textContent = key.email.split('@')[0];
+    fprEl.textContent = 'unavailable — showing armored block only';
+    statusEl.textContent = 'unparsed';
+  }
+}
+
+function render(){
+  KEYS.forEach((key, i) => {
+    const card = makeCard(key, i);
+    grid.appendChild(card);
+    resolveKey(key, card);
+  });
+  keyCount.textContent = KEYS.length + ' key' + (KEYS.length === 1 ? '' : 's') + ' loaded';
+  filter('');
+}
+
+function filter(q){
+  q = q.trim().toLowerCase().replace(/\s+/g,'');
+  const cards = Array.from(grid.children);
+  let visible = 0;
+  cards.forEach(card => {
+    const hay = card.dataset.email + card.dataset.keyid + card.dataset.name;
+    const match = !q || hay.includes(q);
+    card.classList.toggle('hidden', !match);
+    if (match) visible++;
+  });
+  emptyState.style.display = visible === 0 ? 'block' : 'none';
+  resultCount.innerHTML = q
+    ? `<b>${visible}</b> of ${KEYS.length} keys match “${escapeHtml(q)}”`
+    : `showing all <b>${KEYS.length}</b> keys`;
+}
+
+searchInput.addEventListener('input', e => {
+  filter(e.target.value);
+  updateUrl(e.target.value);
+});
+
+function updateUrl(q){
+  const url = new URL(window.location.href);
+  if (q) url.searchParams.set('q', q); else url.searchParams.delete('q');
+  url.searchParams.delete('email');
+  url.searchParams.delete('keyid');
+  window.history.replaceState({}, '', url);
+}
+
+const CANONICAL_URL = 'https://meson.one/keys/';
+
+function applyQueryParams(){
+  const params = new URLSearchParams(window.location.search);
+  const email = params.get('email');
+  const keyid = params.get('keyid');
+  const q = params.get('q');
+  const term = (email || keyid || q || '').trim();
+
+  if (!term) return;
+
+  const termLower = term.toLowerCase().replace(/\s+/g,'');
+  const hasMatch = KEYS.some(k =>
+    k.email.toLowerCase().includes(termLower) ||
+    k.keyId.toLowerCase().includes(termLower)
+  );
+
+  if (!hasMatch){
+    window.location.replace(CANONICAL_URL);
+    return;
+  }
+
+  searchInput.value = term;
+  filter(term);
+
+  const firstMatch = grid.querySelector('.card:not(.hidden)');
+  if (firstMatch){
+    firstMatch.scrollIntoView({behavior:'smooth', block:'center'});
+    firstMatch.style.borderColor = 'var(--accent)';
+    firstMatch.style.boxShadow = '0 0 0 3px var(--accent-soft)';
+  }
+}
+
+render();
+applyQueryParams();
+</script>
+
+</body>
+</html>
