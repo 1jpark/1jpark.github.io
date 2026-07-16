@@ -19,7 +19,7 @@
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="msapplication-config" content="https://cdn.meson.one/f/pkey.meson.one/browserconfig.xml">
     <meta name="theme-color" content="#64A19D">
-  
+
 <style>
   :root{
     --bg:#12151a;
@@ -345,7 +345,7 @@
   <h1>Public key directory<span>.</span></h1>
   <p class="sub">
     OpenPGP public keys for reaching me at any of my addresses. Look up by email or key ID, verify the fingerprint against another channel before trusting it, then import.
-    New keys: <code>gpg --import</code>.
+    New keys: <code>gpg --import</code>. Each entry below is loaded live from its own <code>.asc</code> file in <code>data/</code>.
   </p>
 </header>
 
@@ -371,205 +371,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/openpgp@5/dist/openpgp.min.js"></script>
 <script>
-const KEYS = [
-  {
-    email: "june@meson.kr",
-    keyId: "D6EE491B98DC1998",
-    armor: `-----BEGIN PGP PUBLIC KEY BLOCK-----
-
-xjMEalHbpRYJKwYBBAHaRw8BAQdAkwKEa9nhrMgtqGuLk1IKQL/Gor8a/j63
-JHf7ubXX0ArNGUp1bmUgUGFyayA8anVuZUBtZXNvbi5rcj7CkwQTFgoAOxYh
-BPBOrDTGv2ZCxnpwH9buSRuY3BmYBQJqUdulAhsDBQsJCAcCAiICBhUKCQgL
-AgQWAgMBAh4HAheAAAoJENbuSRuY3BmYcHcA+QFE/8g5sj0GxqV2hHGoQaJg
-9Z5mNhLdMjYAnpXyTyZiAP9HW19h1HY0Ue6QZWM4/LBp62LkZZTQ4qDiwuxx
-iR13Cc44BGpR26USCisGAQQBl1UBBQEBB0A4PN8eR30jmhcb5IG4/Nto5ICR
-zeYJErKnZQC/IpWnPAMBCAfCeAQYFgoAIBYhBPBOrDTGv2ZCxnpwH9buSRuY
-3BmYBQJqUdulAhsMAAoJENbuSRuY3BmYN5gBAIA2QIohx8xZLZTMurwDchBb
-Yg5/O1S5oZwkoL6ppQ+vAPwKeh+ixHK/ViszgU6IFsgkG5dbvABAEzrmoukU
-qPxlBw==
-=JCcN
------END PGP PUBLIC KEY BLOCK-----`
-  },
-  {
-    email: "june@meson.in",
-    keyId: "D6EE491B98DC1998",
-    armor: `-----BEGIN PGP PUBLIC KEY BLOCK-----
-
-xjMEalHgERYJKwYBBAHaRw8BAQdAlt51qtgh34uSkxek1BtFYlcODGxP5lhi
-uwseoPGvvzPNGUp1bmUgUGFyayA8anVuZUBtZXNvbi5pbj7CkwQTFgoAOxYh
-BFOuISoyoRlCAf9oyi//KtWz1stXBQJqUeARAhsDBQsJCAcCAiICBhUKCQgL
-AgQWAgMBAh4HAheAAAoJEC//KtWz1stX1JABALZb7csaWPtXzWzAS0QAXLDW
-qLIlU366YrRxwtzDtgHLAQCsBus6/xQMe0P27p/scjFkaka/RUEJVx5wqwH6
-kpITCc44BGpR4BESCisGAQQBl1UBBQEBB0DkizPG08xzyse+aqnRDY0Jjmbr
-5xdDCsKwM4UYnLCpAgMBCAfCeAQYFgoAIBYhBFOuISoyoRlCAf9oyi//KtWz
-1stXBQJqUeARAhsMAAoJEC//KtWz1stXPEABAP+SfuV3Nw28r0TJuk8JlZTL
-ZbmL+oiN4qjkB0Bvgx0ZAP9VehZePuClD2Ol3pmgBRr1GwDgnaFFrVagjea9
-MymICw==
-=PPzi
------END PGP PUBLIC KEY BLOCK-----`
-  },
-  {
-    email: "meson@insilicobio.com",
-    keyId: "3662D605FDD829B9",
-    armor: `-----BEGIN PGP PUBLIC KEY BLOCK-----
-
-xjMEalHhHxYJKwYBBAHaRw8BAQdAFCVGGcQ3wnhHxkwuCKNpQvnAssNrZGRc
-2mMPgTFDMKnNJlRob21hcyBKLiBQYXJrIDxtZXNvbkBpbnNpbGljb2Jpby5j
-b20+wpMEExYKADsWIQR2Ieq/cfBZkJz+UE02YtYF/dgpuQUCalHhHwIbAwUL
-CQgHAgIiAgYVCgkICwIEFgIDAQIeBwIXgAAKCRA2YtYF/dgpuSrAAQDueeoK
-t9nscQ4j/k0bvy3fbSvtMjAqR2p28EQKoHiObAD/TXAIHbmGIfin0bahA9E9
-yX6ekXW5W2+sAaPSszY7sgfOOARqUeEfEgorBgEEAZdVAQUBAQdAVXla2ajT
-toKelxzAYPLFTWcZ6fVtrDYvvO1+UeA3VFQDAQgHwngEGBYKACAWIQR2Ieq/
-cfBZkJz+UE02YtYF/dgpuQUCalHhHwIbDAAKCRA2YtYF/dgpuWSwAQC4SRsS
-hk8TxAt6LniCY0g9Z8OjwOfhwfwJrMuqjaZwGwD/Ro8zicLAppXBXqithmbq
-A4QTZtK2gUo7jrvwf4HtRQY=
-=iQ/q
------END PGP PUBLIC KEY BLOCK-----`
-  },
-  {
-    email: "park@wonjun.me",
-    keyId: "9E1DFF1AC127B9AD",
-    armor: `-----BEGIN PGP PUBLIC KEY BLOCK-----
-
-xjMEalHnzhYJKwYBBAHaRw8BAQdAaq5DOg5swInh6/rtXC+Ah5Mc0CklGRO6
-PrAaTtn2CP3NHFdvbmp1biBQYXJrIDxwYXJrQHdvbmp1bi5tZT7CkwQTFgoA
-OxYhBD5XAlo6OH/dWPw/c54d/xrBJ7mtBQJqUefOAhsDBQsJCAcCAiICBhUK
-CQgLAgQWAgMBAh4HAheAAAoJEJ4d/xrBJ7mtyuwA/1HEjEmkrHMJJJ5/J7/w
-91UPyX9cJOV2MvQbeDZIHX09AP41pvjY+wwr/FySM8d4CRdTy5kuiaq9ZyZp
-3NMRDtDiDM44BGpR584SCisGAQQBl1UBBQEBB0AgMKAW3TEvem9EHfDQfrBN
-cuLcG0wdD+MUHiFjMLuLFwMBCAfCeAQYFgoAIBYhBD5XAlo6OH/dWPw/c54d
-/xrBJ7mtBQJqUefOAhsMAAoJEJ4d/xrBJ7mtJ9EA/AlUcXe1fPEjkKGWlDUv
-t/AUatQDobvpRTfvyK9b7s2zAP4ocTLGUCyM4iqGDG+pRWX3ld2SNcU1eqCs
-UIlHEfBTAg==
-=jyGN
------END PGP PUBLIC KEY BLOCK-----`
-  },
-  {
-    email: "meson@me.com",
-    keyId: "D2037B6DF64D2126",
-    armor: `-----BEGIN PGP PUBLIC KEY BLOCK-----
-
-xjMEalHjlRYJKwYBBAHaRw8BAQdAEDPNTwyNaMWzhDBDcwzKzjTTdE+Ggza2
-H6uITX461S7NHVRob21hcyBKLiBQYXJrIDxtZXNvbkBtZS5jb20+wpMEExYK
-ADsWIQQS8Q4l0vdEDKoEcaDSA3tt9k0hJgUCalHjlQIbAwULCQgHAgIiAgYV
-CgkICwIEFgIDAQIeBwIXgAAKCRDSA3tt9k0hJse/AP97hMYgu5N8ua5C2NKb
-xD3N7g9vKa6KUvjrarIz8gWBKwD/YrTB+SLAM3MobMMzJASJFRCtjRQrkcv9
-w4E8hpoLnA3OOARqUeOVEgorBgEEAZdVAQUBAQdA68hGCzV1dVqEwSXAdYA+
-bCQAeETJcRnYeTQb7DYm5koDAQgHwngEGBYKACAWIQQS8Q4l0vdEDKoEcaDS
-A3tt9k0hJgUCalHjlQIbDAAKCRDSA3tt9k0hJuvDAP91TEaKjV77+hZY+3Xh
-2eQm75AMT4YYNW2tr5qKYpv8qQD/atTd3CH/r72kq79m7zQfbBO0Hd6Q8B9C
-ymvS0gtpqA0=
-=Y1o6
------END PGP PUBLIC KEY BLOCK-----`
-  },
-  {
-    email: "meson@onni.me",
-    keyId: "BF8C5C701FFC9B42",
-    armor: `-----BEGIN PGP PUBLIC KEY BLOCK-----
-
-xjMEalHkvBYJKwYBBAHaRw8BAQdAc/CRrSRc+Zds+Eaq+Q+6myAGGVjekBt1
-ebnGwZ6K1KHNHlRob21hcyBKLiBQYXJrIDxtZXNvbkBvbm5pLm1lPsKTBBMW
-CgA7FiEEwkUU9j5dTdRQZp82v4xccB/8m0IFAmpR5LwCGwMFCwkIBwICIgIG
-FQoJCAsCBBYCAwECHgcCF4AACgkQv4xccB/8m0IMBQD9Gw/1f8iWlAreceZL
-4dVp9+uS0VsXMt8jWZiYn6ztHH8BAK4dyGZdeTq+eqWYfYh3NCCkcExZvf8R
-isdRgZpB50AAzjgEalHkvBIKKwYBBAGXVQEFAQEHQN03UmRaKd1IYPETagZg
-mWI9ggH83/C/llbn4T1B1VNqAwEIB8J4BBgWCgAgFiEEwkUU9j5dTdRQZp82
-v4xccB/8m0IFAmpR5LwCGwwACgkQv4xccB/8m0J2tAEAqKLoGlf1xo9RBrBF
-Y/T3QD8d9kgVeL4IQ2N6ExiLtTYA/0u00Xl0MTrWy6a6vOLS4yGGQuBPNPog
-5nqkWMR9s9QG
-=bXM6
------END PGP PUBLIC KEY BLOCK-----`
-  },
-  {
-    email: "june@meson.one",
-    keyId: "7CE104B5587559DD",
-    armor: `-----BEGIN PGP PUBLIC KEY BLOCK-----
-
-xjMEalHljRYJKwYBBAHaRw8BAQdAi05wkX4tZKL9qSSvRw9jBror8lIw51Nq
-cbsVHSnKoh7NGkp1bmUgUGFyayA8anVuZUBtZXNvbi5vbmU+wpMEExYKADsW
-IQQjujOHhFsk7FLijzF84QS1WHVZ3QUCalHljQIbAwULCQgHAgIiAgYVCgkI
-CwIEFgIDAQIeBwIXgAAKCRB84QS1WHVZ3ZYDAP9N2FIrZLt+i4swStcVkag5
-oeQD1cmf/dcKrIP4Wibp6wD+Iov5un0FPd34u/IZXMu1S4iNZdGXis2N5XpK
-N9oO1wzOOARqUeWNEgorBgEEAZdVAQUBAQdA3OmqqNulvNkNENsXEYFJtiIX
-ZAwQIeHscHvfu8zJU0gDAQgHwngEGBYKACAWIQQjujOHhFsk7FLijzF84QS1
-WHVZ3QUCalHljQIbDAAKCRB84QS1WHVZ3RbSAP4znS+xX+NQAduIzcCOweI9
-VBxpHkQjWaxFMTQM9BDUogD+KchMSzBskeyxJzQ6pIpr7ZwV+XiGqqPU5BKD
-V605TwE=
-=QFiK
------END PGP PUBLIC KEY BLOCK-----`
-  },
-  {
-    email: "meson@e.email",
-    keyId: "27CAB8199BF14248",
-    armor: `-----BEGIN PGP PUBLIC KEY BLOCK-----
-
-xjMEalHokxYJKwYBBAHaRw8BAQdAzJzfPrReGsQcaNSQrh91cEWonIXWtTPe
-DVuOJRz4U8nNHlRob21hcyBKLiBQaWFvIDxtZXNvbkBlLmVtYWlsPsKTBBMW
-CgA7FiEEuUrYjMSF7yPXKp5LJ8q4GZvxQkgFAmpR6JMCGwMFCwkIBwICIgIG
-FQoJCAsCBBYCAwECHgcCF4AACgkQJ8q4GZvxQkjgzAD9HrP+wQtlNk9YCJi5
-ZEHq8FSaRwNj6+BiObtU0Rpmx1sA/2drwBLoYVdlqgS6S7Ls78r4wi70rMNU
-FzFMpIdqhj8OzjgEalHokxIKKwYBBAGXVQEFAQEHQN28jP1IS+1oYa6J7cSR
-evuJlE2qyu2Z0k/wxkUrrUkAAwEIB8J4BBgWCgAgFiEEuUrYjMSF7yPXKp5L
-J8q4GZvxQkgFAmpR6JMCGwwACgkQJ8q4GZvxQkhZQAD6AjarSZlMGYHSeiaW
-6fpAPWGaZ9gtL/9l1m4/YvxONrgBANCgz/SHCYES40cBE5JdQVzfq436B5Y9
-mqwAxIkhugkF
-=ItLW
------END PGP PUBLIC KEY BLOCK-----`
-  },
-  {
-    email: "meson@daum.net",
-    keyId: "F31095818E82D2E8",
-    armor: `-----BEGIN PGP PUBLIC KEY BLOCK-----
-
-xjMEalHpsBYJKwYBBAHaRw8BAQdAJ8pZM+MgBSjKD6/QpIBnDoAzrpoxUYbx
-96sIxlCq1xzNHFdvbmp1biBQYXJrIDxtZXNvbkBkYXVtLm5ldD7CkwQTFgoA
-OxYhBBuxKaIRLMshD198JvMQlYGOgtLoBQJqUemwAhsDBQsJCAcCAiICBhUK
-CQgLAgQWAgMBAh4HAheAAAoJEPMQlYGOgtLoV/8BAJg/sUx+42ZrpFvAgEw+
-GeriDpXbIQ6iF/oh6iZIHgVbAP4l2DigTankKsFDBI6/vFXYsDfk0CWuuXHR
-GpcKFrcDBM44BGpR6bASCisGAQQBl1UBBQEBB0CUPawgmG0wLSPGIgHHPUyV
-RERhdcKuqssFct1ZLKTmWAMBCAfCdwQYFgoAIBYhBBuxKaIRLMshD198JvMQ
-lYGOgtLoBQJqUemwAhsMAAoJEPMQlYGOgtLoqSkA/1S0dTfAYnuO2xPUfLkq
-oSePfhM2iWreaKFjsvkHU+xzAPYyfw1zLShYghPR+jIoiOUTRTBoPCTTOxFJ
-kNhWCycM
-=ZCAL
------END PGP PUBLIC KEY BLOCK-----`
-  },
-  {
-    email: "meson@reasonomics.com",
-    keyId: "5DFA0AC03A2A2AC9",
-    armor: `-----BEGIN PGP PUBLIC KEY BLOCK-----
-
-xjMEalHqHBYJKwYBBAHaRw8BAQdASQxrB7crzKAkzLgRoDHWbak52Yq6plKk
-d5QdwWHbSaTNJlRob21hcyBKLiBQaWFvIDxtZXNvbkByZWFzb25vbWljcy5j
-b20+wpMEExYKADsWIQQbKmU9dVkzdd7/pURd+grAOioqyQUCalHqHAIbAwUL
-CQgHAgIiAgYVCgkICwIEFgIDAQIeBwIXgAAKCRBd+grAOioqyYsFAQCf8gU4
-Tdo5k0MYOS8cnDMU9cASdFgXAD/4GJVrzfCd2gEA51sEC9+3F0Bk3vruwIER
-MWvlamDoketpBYWkNTKy9wvOOARqUeocEgorBgEEAZdVAQUBAQdA9dYbHVvt
-W3PUrpdQHoi4JRqcV9zP5z9BfsGYFpCVVkUDAQgHwngEGBYKACAWIQQbKmU9
-dVkzdd7/pURd+grAOioqyQUCalHqHAIbDAAKCRBd+grAOioqybTOAPsEfi38
-hQZa9MQ+Onlx9m/dymLpuON3fa4VuCZdoIRomQD/V8cg79p5NvT9TfTQiNZA
-OU8xpMIzeQE0tnw2dB4EOgU=
-=xBFr
------END PGP PUBLIC KEY BLOCK-----`
-  },
-  {
-    email: "june@dr.wonjun.me",
-    keyId: "80AD38F596900CF5",
-    armor: `-----BEGIN PGP PUBLIC KEY BLOCK-----
-
-mDMEaledxhYJKwYBBAHaRw8BAQdAitP2+LsEF0dIJp99ZEp2voCPjZ4rXxE2xb89
-OPgCSKK0I0RyLiBXb25qdW4gUGFyayA8anVuZUBkci53b25qdW4ubWU+iJMEExYK
-ADsWIQQFVvyW0GXHZJcXCMmArTj1lpAM9QUCaledxgIbAwULCQgHAgIiAgYVCgkI
-CwIEFgIDAQIeBwIXgAAKCRCArTj1lpAM9SfiAQDsDhpaaNWoXQjrxMeIjQFpLMgy
-48s9D81NektdRZsOxAEAmuPGXdONnC6HCSyH1slrl+Vur5H/iNDb6T+R/ALHMgC4
-OARqV53GEgorBgEEAZdVAQUBAQdAZmjiInVloAr1z+0XiRVRSxhsb/fF0RM5C5he
-Gl8anTEDAQgHiHgEGBYKACAWIQQFVvyW0GXHZJcXCMmArTj1lpAM9QUCaledxgIb
-DAAKCRCArTj1lpAM9Zb9APwNm3RYJYIZG8xiVQh0v+Uy8mwTG/w0Miqjredpg8aZ
-EAD/ecWXOya1YoeG4rfYCmgCNjFIXJqRdlnRQKy0+XyHpwI=
-=cr28
------END PGP PUBLIC KEY BLOCK-----`
-  }
-];
+const MANIFEST_URL = 'data/manifest.json';
+const KEY_DIR = 'data/';
+const CANONICAL_URL = 'https://meson.one/keys/';
 
 const grid = document.getElementById('grid');
 const emptyState = document.getElementById('emptyState');
@@ -577,8 +381,9 @@ const resultCount = document.getElementById('resultCount');
 const keyCount = document.getElementById('keyCount');
 const searchInput = document.getElementById('q');
 
+let TOTAL = 0;
+
 function groupFingerprint(fpr){
-  // group into 4-char blocks, 5 blocks per line for readability
   const blocks = fpr.match(/.{1,4}/g) || [fpr];
   let out = '';
   blocks.forEach((b, i) => {
@@ -592,26 +397,27 @@ function escapeHtml(s){
   return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-function makeCard(key, index){
+function makeCard(filename, index){
   const card = document.createElement('article');
   card.className = 'card';
-  card.dataset.email = key.email.toLowerCase();
-  card.dataset.keyid = key.keyId.toLowerCase();
+  card.dataset.email = '';
+  card.dataset.keyid = '';
   card.dataset.name = '';
+  card.dataset.file = filename;
   card.id = 'key-' + index;
 
   card.innerHTML = `
     <div class="card-top">
       <div class="identity">
-        <div class="name" data-role="name">Resolving identity…</div>
-        <div class="email">${escapeHtml(key.email)}</div>
+        <div class="name" data-role="name">Loading ${escapeHtml(filename)}…</div>
+        <div class="email" data-role="email">—</div>
       </div>
-      <div class="status pending" data-role="status">parsing</div>
+      <div class="status pending" data-role="status">loading</div>
     </div>
 
     <div class="field">
       <div class="label">Key ID</div>
-      <div class="value">${escapeHtml(key.keyId)}</div>
+      <div class="value" data-role="keyid">—</div>
     </div>
 
     <div class="field">
@@ -631,37 +437,45 @@ function makeCard(key, index){
     </div>
 
     <div class="actions">
-      <button class="btn" data-action="copy-fpr">copy fingerprint</button>
-      <button class="btn" data-action="copy-armor">copy public key</button>
-      <button class="btn" data-action="download">download .asc</button>
+      <button class="btn" data-action="copy-fpr" disabled>copy fingerprint</button>
+      <button class="btn" data-action="copy-armor" disabled>copy public key</button>
+      <button class="btn" data-action="download" disabled>download .asc</button>
     </div>
 
     <details class="armor">
       <summary>view armored block</summary>
-      <pre>${escapeHtml(key.armor)}</pre>
+      <pre data-role="armor">fetching data/${escapeHtml(filename)}…</pre>
     </details>
   `;
 
-  card.querySelector('[data-action="copy-fpr"]').addEventListener('click', e => {
+  return card;
+}
+
+function wireActions(card, armorText, emailForFilename){
+  const copyFprBtn = card.querySelector('[data-action="copy-fpr"]');
+  const copyArmorBtn = card.querySelector('[data-action="copy-armor"]');
+  const downloadBtn = card.querySelector('[data-action="download"]');
+
+  [copyFprBtn, copyArmorBtn, downloadBtn].forEach(b => b.removeAttribute('disabled'));
+
+  copyFprBtn.addEventListener('click', e => {
     const fpr = card.querySelector('[data-role="fpr"]').textContent.replace(/\s+/g,'');
-    copyText(fpr || key.keyId, e.target);
+    copyText(fpr, e.target);
   });
-  card.querySelector('[data-action="copy-armor"]').addEventListener('click', e => {
-    copyText(key.armor, e.target);
+  copyArmorBtn.addEventListener('click', e => {
+    copyText(armorText, e.target);
   });
-  card.querySelector('[data-action="download"]').addEventListener('click', () => {
-    const blob = new Blob([key.armor], {type:'application/pgp-keys'});
+  downloadBtn.addEventListener('click', () => {
+    const blob = new Blob([armorText], {type:'application/pgp-keys'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = key.email.replace(/[^a-z0-9.@-]/gi,'_') + '.asc';
+    a.download = (emailForFilename || card.dataset.file).replace(/[^a-z0-9.@-]/gi,'_') + '.asc';
     document.body.appendChild(a);
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
   });
-
-  return card;
 }
 
 function copyText(text, btn){
@@ -673,45 +487,93 @@ function copyText(text, btn){
   });
 }
 
-async function resolveKey(key, card){
+async function loadAndResolve(filename, card){
   const nameEl = card.querySelector('[data-role="name"]');
+  const emailEl = card.querySelector('[data-role="email"]');
   const statusEl = card.querySelector('[data-role="status"]');
+  const keyidEl = card.querySelector('[data-role="keyid"]');
   const fprEl = card.querySelector('[data-role="fpr"]');
   const algoEl = card.querySelector('[data-role="algo"]');
   const createdEl = card.querySelector('[data-role="created"]');
+  const armorEl = card.querySelector('[data-role="armor"]');
 
+  let armorText = '';
+  try{
+    const res = await fetch(KEY_DIR + filename, {cache:'no-store'});
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    armorText = await res.text();
+    armorEl.textContent = armorText;
+  }catch(err){
+    nameEl.textContent = filename;
+    statusEl.textContent = 'fetch failed';
+    armorEl.textContent = 'could not load ' + KEY_DIR + filename;
+    return null;
+  }
+
+  let email = '';
   try{
     if (typeof openpgp === 'undefined') throw new Error('openpgp.js unavailable');
-    const publicKey = await openpgp.readKey({ armoredKey: key.armor });
+    const publicKey = await openpgp.readKey({ armoredKey: armorText });
     const fpr = publicKey.getFingerprint().toUpperCase();
+    const keyId = publicKey.getKeyID().toHex().toUpperCase();
     const uids = publicKey.getUserIDs();
-    const name = (uids[0] || key.email).split('<')[0].trim() || key.email;
+    const rawUid = uids[0] || filename;
+    const name = rawUid.split('<')[0].trim() || filename;
+    const emailMatch = rawUid.match(/<([^>]+)>/);
+    email = emailMatch ? emailMatch[1] : '';
     const created = publicKey.getCreationTime();
     const algoInfo = publicKey.getAlgorithmInfo();
 
     nameEl.textContent = name;
+    emailEl.textContent = email || '—';
+    keyidEl.textContent = keyId;
     fprEl.textContent = groupFingerprint(fpr);
     algoEl.textContent = (algoInfo.curve || algoInfo.algorithm || '—').replace(/^eddsa$/i,'EdDSA (Ed25519)');
     createdEl.textContent = created ? created.toISOString().slice(0,10) : '—';
     statusEl.textContent = 'verified';
     statusEl.classList.remove('pending');
     statusEl.classList.add('ok');
+
+    card.dataset.email = email.toLowerCase();
+    card.dataset.keyid = keyId.toLowerCase();
     card.dataset.name = name.toLowerCase();
   }catch(err){
-    nameEl.textContent = key.email.split('@')[0];
-    fprEl.textContent = 'unavailable — showing armored block only';
+    nameEl.textContent = filename;
     statusEl.textContent = 'unparsed';
+    fprEl.textContent = 'unavailable — showing armored block only';
   }
+
+  wireActions(card, armorText, email);
+  return { email, filename };
 }
 
-function render(){
-  KEYS.forEach((key, i) => {
-    const card = makeCard(key, i);
+async function render(){
+  let manifest = [];
+  try{
+    const res = await fetch(MANIFEST_URL, {cache:'no-store'});
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    manifest = await res.json();
+  }catch(err){
+    keyCount.textContent = 'could not load ' + MANIFEST_URL;
+    emptyState.style.display = 'block';
+    emptyState.querySelector('.glyph-big') && (emptyState.querySelector('.glyph-big').textContent = '⚠');
+    emptyState.lastChild.textContent = ' could not load key directory (' + MANIFEST_URL + ')';
+    return;
+  }
+
+  TOTAL = manifest.length;
+  keyCount.textContent = TOTAL + ' key' + (TOTAL === 1 ? '' : 's') + ' loaded';
+
+  const cards = manifest.map((filename, i) => {
+    const card = makeCard(filename, i);
     grid.appendChild(card);
-    resolveKey(key, card);
+    return card;
   });
-  keyCount.textContent = KEYS.length + ' key' + (KEYS.length === 1 ? '' : 's') + ' loaded';
+
+  await Promise.all(manifest.map((filename, i) => loadAndResolve(filename, cards[i])));
+
   filter('');
+  applyQueryParams();
 }
 
 function filter(q){
@@ -719,15 +581,15 @@ function filter(q){
   const cards = Array.from(grid.children);
   let visible = 0;
   cards.forEach(card => {
-    const hay = card.dataset.email + card.dataset.keyid + card.dataset.name;
+    const hay = card.dataset.email + card.dataset.keyid + card.dataset.name + card.dataset.file.toLowerCase();
     const match = !q || hay.includes(q);
     card.classList.toggle('hidden', !match);
     if (match) visible++;
   });
   emptyState.style.display = visible === 0 ? 'block' : 'none';
   resultCount.innerHTML = q
-    ? `<b>${visible}</b> of ${KEYS.length} keys match “${escapeHtml(q)}”`
-    : `showing all <b>${KEYS.length}</b> keys`;
+    ? `<b>${visible}</b> of ${TOTAL} keys match “${escapeHtml(q)}”`
+    : `showing all <b>${TOTAL}</b> keys`;
 }
 
 searchInput.addEventListener('input', e => {
@@ -743,8 +605,6 @@ function updateUrl(q){
   window.history.replaceState({}, '', url);
 }
 
-const CANONICAL_URL = 'https://meson.one/keys/';
-
 function applyQueryParams(){
   const params = new URLSearchParams(window.location.search);
   const email = params.get('email');
@@ -755,9 +615,9 @@ function applyQueryParams(){
   if (!term) return;
 
   const termLower = term.toLowerCase().replace(/\s+/g,'');
-  const hasMatch = KEYS.some(k =>
-    k.email.toLowerCase().includes(termLower) ||
-    k.keyId.toLowerCase().includes(termLower)
+  const cards = Array.from(grid.children);
+  const hasMatch = cards.some(card =>
+    (card.dataset.email + card.dataset.keyid).includes(termLower)
   );
 
   if (!hasMatch){
@@ -777,7 +637,6 @@ function applyQueryParams(){
 }
 
 render();
-applyQueryParams();
 </script>
 
 </body>
