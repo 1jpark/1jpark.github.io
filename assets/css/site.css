@@ -34,6 +34,10 @@ h1{font:500 clamp(2.7rem,8.5vw,5.8rem)/1.05 Alegreya,Georgia,serif;letter-spacin
 .grid a:hover::after,.grid a:focus-visible::after{opacity:1}
 @media(min-width:700px){.grid{grid-template-columns:repeat(3,92px);gap:20px}.grid a{font-size:32px}}
 
+.bar{width:min(240px,60vw);height:3px;margin-top:16px;border-radius:3px;overflow:hidden;background:var(--line);animation:rise .9s .9s both}
+.bar i{display:block;height:100%;background:var(--ice);animation:fill 10s 1s linear both}
+@keyframes fill{from{width:0}to{width:100%}}
+
 /* Footer */
 footer{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 14px;font-size:13px;color:var(--mute);animation:rise .9s 1.9s both}
 footer nav{display:flex;align-items:center}
