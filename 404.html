@@ -3,6 +3,7 @@
 <head>
 <title>404 · Aquí está Júne</title>
 <meta name="robots" content="noindex">
+<meta http-equiv="refresh" content="11;url=/">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0b2233">
@@ -29,7 +30,8 @@
   <main>
     <h1>404</h1>
     <div class="roles"><p>ª Page not found</p></div>
-    <p class="lead">This address has moved or never existed.</p>
+    <p class="lead">This address has moved or never existed. Returning to the main page in <b id="n">10</b>s.</p>
+    <div class="bar" aria-hidden="true"><i></i></div>
     <nav class="grid" style="grid-template-columns:auto" aria-label="Back home">
       <a style="--i:0;width:92px" href="/" aria-label="Home"><i class="fa-solid fa-house"></i></a>
     </nav>
@@ -47,5 +49,9 @@
   </footer>
 </div>
 <script src="/assets/js/site.js"></script>
+<script>
+(function(){var n=10,el=document.getElementById('n');
+  var t=setInterval(function(){n--;el.textContent=n;if(n<=0){clearInterval(t);location.replace('/')}},1000);})();
+</script>
 </body>
 </html>
